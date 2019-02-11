@@ -1,0 +1,16 @@
+&parameters
+   Sigma = 2
+   sigma = 0.45
+   sigma_theory = 0.147105292657
+   Nbumps = 75
+   T = 10
+   Nx = 101
+   Ny = 100
+   Lx = 100
+   Ly = 100
+   D_x = 0.2
+   D_y = 0.2
+   probability2 = 0.1
+   Sigma2 = 2
+   volume2 = 500
+/ 

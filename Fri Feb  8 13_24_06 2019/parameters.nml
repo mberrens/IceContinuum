@@ -1,0 +1,13 @@
+&parameters
+   Sigma = 4
+   sigma = 0.1
+   sigma_theory = 0.0735526463286
+   Nbumps = 200
+   T = 1.5
+   Nx = 101
+   Ny = 100
+   Lx = 100
+   Ly = 100
+   D_x = 0.2
+   D_y = 0.2
+/ 

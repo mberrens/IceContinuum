@@ -1,11 +1,11 @@
 &parameters
    Sigma = 4
-   sigma = 0.046
+   sigma = 0.055
    sigma_theory = 0.0735526463286
    Nbumps = 50
-   T = 15
-   Nx = 101
-   Ny = 100
+   T = 10
+   Nx = 151
+   Ny = 150
    Lx = 100
    Ly = 100
    D_x = 0.2

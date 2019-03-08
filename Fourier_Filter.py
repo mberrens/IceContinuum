@@ -12,23 +12,22 @@ import time
 from sys import platform
 from scipy.interpolate import griddata
 
-def FT(sollast,x,y):
+def FT(grid,x,y):
 
 
     # Fourier transform it
-    sollast_FT = np.fft.fft2(sollast)
-    sollast_FTshift = np.fft.fftshift(sollast_FT)
+    grid_FT = np.fft.fft2(grid)
+    grid_FTshift = np.fft.fftshift(grid_FT)
 
     # And get the frequencies
-    Ny, Nx = np.shape(sollast)
+    Ny, Nx = np.shape(grid)
     dx = x[1]-x[0]
     dy = y[1]-y[0]
     kx = np.fft.fftfreq(Nx,dx)
     ky = np.fft.fftfreq(Ny,dy)
     kxshift = np.fft.fftshift(kx)
     kyshift = np.fft.fftshift(ky)
-    kxshiftgrid,kyshiftgrid = np.meshgrid(kxshift,kyshift); #print(kxgrid.shape)
-    return sollast_FTshift, kxshiftgrid, kyshiftgrid
+    return grid_FTshift, kxshift, kyshift
 
 
 def IFT(sollast_FTshift_filtered):

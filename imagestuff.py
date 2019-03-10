@@ -201,7 +201,8 @@ def polyfit2d(x, y, z, order=3, linear=False):
         G[:,k] = x**i * y**j
         if linear & (i != 0.) & (j != 0.):
             G[:, k] = 0
-    m, _, _, _ = np.linalg.lstsq(G, z)
+    # m, _, _, _ = np.linalg.lstsq(G, z) # Deprecated by SPN
+    m, _, _, _ = np.linalg.lstsq(G, z, rcond=None)
     return m
 
 def polyval2d(x, y, m):

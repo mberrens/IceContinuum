@@ -1,9 +1,19 @@
 
 
-def get_heights(                  nsegments,nx1list,nx2list,ny1list,ny2list,dx,dy,solution,                  accumlist):
+import numpy as np
+import copy
+import time
+import imagestuff as ims
+from scipy.interpolate import griddata
 
-    # Looping over all the segments
-    for isegment in range(0,nsegments):
+import importlib; importlib.reload(ims)
+
+
+
+
+
+
+def get_heights(nsegments,nx1list,nx2list,ny1list,ny2list,dx,dy,solution,isegment):
 
         # Extract this segment
         nx1=nx1list[isegment]; nx2=nx2list[isegment]; nxsegment = nx2-nx1+1
@@ -14,40 +24,55 @@ def get_heights(                  nsegments,nx1list,nx2list,ny1list,ny2list,dx,d
         surf_zseggrid = copy.copy(np.flipud(solution[ny1:ny2+1,nx1:nx2+1])) # This flips the y-coordinate
 
         # Fit a plane to the data and adjust data to start at the origin
-        m = ims.polyfit2d(                      surf_xseggrid.reshape(nysegment*nxsegment),                       surf_yseggrid.reshape(nysegment*nxsegment),                       surf_zseggrid.reshape(nysegment*nxsegment),                       linear=True,order=1)
+        m = ims.polyfit2d(surf_xseggrid.reshape(nysegment*nxsegment), \
+                          surf_yseggrid.reshape(nysegment*nxsegment), \
+                          surf_zseggrid.reshape(nysegment*nxsegment), \
+                          linear=True,order=1)
 
         # Get the angles of the plane
         dzdy = m[1]; thetay = np.arctan(dzdy)*180/np.pi; #print 'y:', thetay
 
         # Get rotation matrix & flatten in one direction
         Roty = ims.myrotation_matrix([1,0,0], -thetay)
-        surf_xseggridp, surf_yseggridp, surf_zseggridp =             ims.flatten(surf_xseggrid, surf_yseggrid, surf_zseggrid, Roty)
+        surf_xseggridp, surf_yseggridp, surf_zseggridp = \
+            ims.flatten(surf_xseggrid, surf_yseggrid, surf_zseggrid, Roty)
 
         # Fit a plane to the data and adjust data to start at the origin
-        mp = ims.polyfit2d(                      surf_xseggridp.reshape(nysegment*nxsegment),                       surf_yseggridp.reshape(nysegment*nxsegment),                       surf_zseggridp.reshape(nysegment*nxsegment),                       linear=True,order=1)
+        mp = ims.polyfit2d(surf_xseggridp.reshape(nysegment*nxsegment), \
+                           surf_yseggridp.reshape(nysegment*nxsegment), \
+                           surf_zseggridp.reshape(nysegment*nxsegment), \
+                           linear=True,order=1)
 
         # Get the angle of the plane in another direction
         dzdx = mp[2]; thetaxp = np.arctan(dzdx)*180/np.pi; #print 'x:', thetaxp
 
         # Get rotation matrix & flatten in another direction
         Rotxp = ims.myrotation_matrix([0,1,0], thetaxp)
-        surf_xseggridpp, surf_yseggridpp, surf_zseggridpp =             ims.flatten(surf_xseggridp, surf_yseggridp, surf_zseggridp, Rotxp)
+        surf_xseggridpp, surf_yseggridpp, surf_zseggridpp = \
+            ims.flatten(surf_xseggridp, surf_yseggridp, surf_zseggridp, Rotxp)
 
 
         # Trying out the polyval2d
-        surf_zseggrid_theory_long = ims.polyval2d(                      surf_xseggrid.reshape(nysegment*nxsegment),                       surf_yseggrid.reshape(nysegment*nxsegment),                       m)
+        surf_zseggrid_theory_long = ims.polyval2d( \
+                                        surf_xseggrid.reshape(nysegment*nxsegment), \
+                                        surf_yseggrid.reshape(nysegment*nxsegment), \
+                                        m)
         surf_zseggrid_theory = surf_zseggrid_theory_long.reshape(nysegment,nxsegment)
         #surf_zseggrid_theory -= z0
-        surf_xseggridp_theory, surf_yseggridp_theory, surf_zseggridp_theory =             ims.flatten(surf_xseggrid, surf_yseggrid, surf_zseggrid_theory, Roty)
-        surf_xseggridpp_theory, surf_yseggridpp_theory, surf_zseggridpp_theory =             ims.flatten(surf_xseggridp_theory, surf_yseggridp_theory, surf_zseggridp_theory, Rotxp)
+        surf_xseggridp_theory, surf_yseggridp_theory, surf_zseggridp_theory = \
+            ims.flatten(surf_xseggrid, surf_yseggrid, surf_zseggrid_theory, Roty)
+        surf_xseggridpp_theory, surf_yseggridpp_theory, surf_zseggridpp_theory = \
+            ims.flatten(surf_xseggridp_theory, surf_yseggridp_theory, surf_zseggridp_theory, Rotxp)
 
         # Now rotate
         deltay = surf_yseggridpp_theory[0,-1]-surf_yseggridpp_theory[0,0]
         deltax = surf_xseggridpp_theory[0,-1]-surf_xseggridpp_theory[0,0]
         thetazpp = -np.arctan(deltay/deltax)*180/np.pi;
         Rotzpp = ims.myrotation_matrix([0,0,1], thetazpp)
-        surf_xseggridppp, surf_yseggridppp, surf_zseggridppp =             ims.flatten(surf_xseggridpp, surf_yseggridpp, surf_zseggridpp, Rotzpp)
-        surf_xseggridppp_theory, surf_yseggridppp_theory, surf_zseggridppp_theory =             ims.flatten(surf_xseggridpp_theory, surf_yseggridpp_theory, surf_zseggridpp_theory, Rotzpp)
+        surf_xseggridppp, surf_yseggridppp, surf_zseggridppp = \
+            ims.flatten(surf_xseggridpp, surf_yseggridpp, surf_zseggridpp, Rotzpp)
+        surf_xseggridppp_theory, surf_yseggridppp_theory, surf_zseggridppp_theory = \
+            ims.flatten(surf_xseggridpp_theory, surf_yseggridpp_theory, surf_zseggridpp_theory, Rotzpp)
 
         # Now we have to extract an orthogonal subset
         dxsub = dysub = dx
@@ -69,9 +94,9 @@ def get_heights(                  nsegments,nx1list,nx2list,ny1list,ny2list,dx,d
         # Now we get the heights relative to a reference
         zreference = np.median(sub_zseggrid)
         
-        # Accumulate the binned data
-        if isegment in accumlist:
-            zout = zreference
+#         # Accumulate the binned data
+#         if isegment in accumlist:
+            
 
-    # Get out
-    return zout
+        # Get out
+        return sub_zseggrid, dxsub

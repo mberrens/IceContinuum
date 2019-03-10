@@ -99,4 +99,4 @@ def get_heights(nsegments,nx1list,nx2list,ny1list,ny2list,dx,dy,solution,isegmen
             
 
         # Get out
-        return sub_zseggrid, dxsub
+        return sub_zseggrid

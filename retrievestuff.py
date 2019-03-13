@@ -5,12 +5,7 @@ import copy
 import time
 import imagestuff as ims
 from scipy.interpolate import griddata
-
-import importlib; importlib.reload(ims)
-
-
-
-
+#import importlib; importlib.reload(ims)
 
 
 def get_heights(nsegments,nx1list,nx2list,ny1list,ny2list,dx,dy,solution,isegment):
@@ -100,3 +95,31 @@ def get_heights(nsegments,nx1list,nx2list,ny1list,ny2list,dx,dy,solution,isegmen
 
         # Get out
         return sub_zseggrid
+
+    
+def getrhoofz2(sollast_in,dx,dy,nbins=10,transposeflag=False):
+    
+    # Transpose, if flagged
+    if transposeflag:
+        sollast = sollast_in.T
+    else:
+        sollast = sollast_in
+    
+    # Dimensions 
+    Nx, Ny = np.shape(sollast)
+    
+    # Calculate the gradient squared (Z2)
+    dzdx = np.diff(sollast, axis=0)/dx
+    dzdy = np.diff(sollast, axis = 1)/dy #we are not sure which axis is which
+    Z2 = dzdx[:, 1:]**2+dzdy[1:, :]**2
+    
+    # Get the probability distribution
+    Z2flat = np.reshape(Z2, (Nx-1)*(Ny-1))
+    counts, bins = np.histogram(Z2flat,bins=nbins)
+    counts = counts/np.sum(counts)
+    newbins = bins[1:]
+#     subset = np.array([i for i in range(4,len(bins))])-1
+#     logcounts = np.log(counts[subset])
+
+    #plt.semilogy(newbins, counts, 'o', label='Numerical result')
+    return counts, newbins

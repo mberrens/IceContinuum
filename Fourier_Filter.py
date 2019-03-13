@@ -25,6 +25,8 @@ def FT(grid,x,y):
     dy = y[1]-y[0]
     kx = np.fft.fftfreq(Nx,dx)
     ky = np.fft.fftfreq(Ny,dy)
+#     kx = np.fft.fftfreq(Nx,x[-1]-x[0])
+#     ky = np.fft.fftfreq(Ny,x[-1]-x[0])
     kxshift = np.fft.fftshift(kx)
     kyshift = np.fft.fftshift(ky)
     return grid_FTshift, kxshift, kyshift

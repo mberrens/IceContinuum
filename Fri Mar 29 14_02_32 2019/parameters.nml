@@ -1,0 +1,16 @@
+&parameters
+   Sigma = 0.95
+   sigma = 0.182
+   sigma_theory = 0.309695352962
+   Nbumps = 60
+   T = 1
+   Nx = 151
+   Ny = 150
+   Lx = 20
+   Ly = 20
+   D_x = 0.008
+   D_y = 0.008
+   volume = 1.7
+   mean_u = 0.255816225166
+   growth_rate = 0.00426360375276
+/ 

@@ -7,6 +7,9 @@ pip install numpy-stl
 Installing abel
 pip install payable
 
+Installing weibull 
+pip install weibull
+
  
 
 

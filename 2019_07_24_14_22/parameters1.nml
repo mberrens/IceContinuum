@@ -1,0 +1,19 @@
+&parameters1
+   Sigma = 1
+   sigma = 0.137
+   sigma_theory = 0.294210585314
+   Nbumps = 111
+   T = 0.314159265359
+   Nx = 101
+   Ny = 100
+   Lx = 20
+   Ly = 20
+   D_x = 0.043
+   D_y = 0.043
+   volume = 1.2566370614359172
+   height = 0.2
+   mean_u = 0.344890884584
+   growth_rate = 0.01
+   Tdouble = 34.88372093023256
+   T_total = 34.8716784548
+/ 
